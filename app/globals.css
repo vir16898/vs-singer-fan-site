@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Add custom theme configurations here if needed */
+  --font-display: "Roboto", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
