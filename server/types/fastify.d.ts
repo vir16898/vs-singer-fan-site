@@ -9,4 +9,12 @@ declare module 'fastify' {
     ) => Promise<void>;
     db: Db;
   }
+
+  interface FastifyRequest {
+    user: {
+      id: string;
+      username: string;
+      type: string;
+    };
+  }
 }
