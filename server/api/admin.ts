@@ -2,14 +2,12 @@ import { FastifyPluginAsync, FastifyInstance, FastifyRequest, FastifyReply } fro
 
 const adminRoutes: FastifyPluginAsync = async (fastify: FastifyInstance) => {
   fastify.get('/admin', { preHandler: [fastify.authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const user = (request as FastifyRequest).user as {
+    // Fallback type assertion if global type declaration fails
+    const user = request.user as {
       id: string;
       username: string;
       type: string;
     };
-    if (!user) {
-      return { message: 'No user info : ', user };
-    }
     if (user.type !== 'administrator') {
       return reply.status(403).send({ error: 'Access denied' });
     }
