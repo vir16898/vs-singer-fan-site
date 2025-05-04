@@ -15,6 +15,6 @@ declare module 'fastify' {
       id: string;
       username: string;
       type: string;
-    };
+    } | null;
   }
 }
