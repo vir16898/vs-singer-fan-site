@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"bun server.ts\" \"next dev --turbopack\"",
+    "dev": "concurrently \"bun server.ts\" \"next dev\"",
     "init-db": "bun scripts/init-db.ts",
     "cron": "bun scripts/cron_fetch_videos.ts"
   },

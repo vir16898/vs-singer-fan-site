@@ -9,6 +9,9 @@ async function fetchVideos(singer: string, keywords: string[]) {
     throw new Error('YouTube API key is not set');
   }
 
+  // Use environment variable for API base URL
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:4000';
+
   // Calculate the date range: from 7 days ago to now
   const now = new Date();
   const sevenDaysAgo = new Date(now);
@@ -16,7 +19,7 @@ async function fetchVideos(singer: string, keywords: string[]) {
 
   try {
     // Fetch videos from MongoDB via /api/get_videos
-    const response = await fetch(`/api/get_videos?singer=${encodeURIComponent(singer)}`);
+    const response = await fetch(`${apiBaseUrl}/api/get_videos?singer=${encodeURIComponent(singer)}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch videos for ${singer}`);
     }
