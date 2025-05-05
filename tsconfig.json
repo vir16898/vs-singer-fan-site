@@ -41,7 +41,7 @@
     "server/**/*.d.ts",
     ".next/types/**/*.ts",
     "next.config.cjs"
-  ],
+, "next.config.mjs"  ],
   "exclude": [
     "node_modules"
   ]
