@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import cron from 'node-cron';
 
 const singers = ['Haruno Sora', 'Hiyama Kiyoteru', 'Frimomen'];
 const apiUrl = process.env.API_URL || 'https://vs-singer-fan-site.vercel.app/api/fetch_video';
@@ -17,30 +18,19 @@ async function fetchVideosForSinger(singer: string) {
   }
 }
 
-async function runCronJob() {
-  console.log('Running cron job to fetch videos...');
+async function fetchAllVideos() {
+  console.log('Running cron job to fetch videos for all singers...');
   for (const singer of singers) {
     await fetchVideosForSinger(singer);
   }
 }
 
+// Schedule cron job to run daily at 00:00 (midnight) UTC
+cron.schedule('0 0 * * *', fetchAllVideos);
+
 // Run immediately for testing
-runCronJob();
+fetchAllVideos();
+
+console.log('Cron job scheduled to run daily at 00:00 UTC.');
 
 export {};
-
-
-
-
-
-import cron from 'node-cron';
-
-// Schedule cron job to run every hour
-cron.schedule('0 * * * *', async () => {
-  console.log('Running cron job to fetch videos...');
-  for (const singer of singers) {
-    await fetchVideosForSinger(singer);
-  }
-});
-
-console.log('Cron job scheduled to run every hour.');

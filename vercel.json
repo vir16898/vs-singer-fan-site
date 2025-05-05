@@ -22,5 +22,13 @@
         "x-vercel-rewrite": "next"
       }
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/fetch_video",
+      "schedule": "0 0 * * *",
+      "method": "POST",
+      "body": { "singers": ["Haruno Sora", "Hiyama Kiyoteru", "Frimomen"] }
+    }
   ]
 }
