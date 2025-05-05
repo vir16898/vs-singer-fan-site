@@ -1,6 +1,7 @@
 {
   "name": "vs-singer-fan-site",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "concurrently \"bun server.ts\" \"next dev\"",
