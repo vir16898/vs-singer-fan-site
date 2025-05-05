@@ -1,73 +1,80 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Container, Typography, TextField, Button, Box, List, ListItem, ListItemText } from '@mui/material';
-import YouTube from 'react-youtube';
+import * as React from 'react';
+import { Typography, Box } from '@mui/material';
+import VideoTabs from '@/components/VideoTabs';
 
-interface Video {
-  videoId: string;
-  singer: string;
-  uploader: string;
-  title: string;
-  publishedAt: string;
+// Function to fetch videos from MongoDB and view counts from YouTube API
+async function fetchVideos(singer: string, keywords: string[]) {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey) {
+    throw new Error('YouTube API key is not set');
+  }
+
+  // Calculate the date range: from 7 days ago to now
+  const now = new Date();
+  const sevenDaysAgo = new Date(now);
+  sevenDaysAgo.setDate(now.getDate() - 7);
+
+  try {
+    // Fetch videos from MongoDB via /api/get_videos
+    const response = await fetch(`/api/get_videos?singer=${encodeURIComponent(singer)}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch videos for ${singer}`);
+    }
+    const videos = await response.json();
+
+    // Filter videos to those published between 7 days ago and now
+    const filteredVideos = videos.filter((video: any) => {
+      const publishedAt = new Date(video.publishedAt);
+      return publishedAt >= sevenDaysAgo && publishedAt <= now;
+    });
+
+    if (filteredVideos.length === 0) {
+      return [];
+    }
+
+    // Fetch view counts from YouTube API
+    const videoIds = filteredVideos.map((video: any) => video.videoId).join(',');
+    const detailsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}&key=${apiKey}`
+    );
+    const detailsData = await detailsResponse.json();
+
+    if (!detailsData.items || detailsData.items.length === 0) {
+      return [];
+    }
+
+    // Merge MongoDB data with view counts
+    return filteredVideos.map((video: any) => {
+      const youtubeVideo = detailsData.items.find((item: any) => item.id === video.videoId);
+      return {
+        title: video.title,
+        videoId: video.videoId,
+        views: youtubeVideo ? youtubeVideo.statistics.viewCount : '0',
+        publishedAt: video.publishedAt,
+      };
+    });
+  } catch (error) {
+    console.error(`Error fetching videos for ${singer}:`, error);
+    return [];
+  }
 }
 
-export default function NewRelease() {
-  const [singer, setSinger] = useState<string>('Haruno Sora');
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchVideos = async (singerName: string) => {
-    try {
-      const response = await fetch(`/api/get_videos${singerName ? `?singer=${encodeURIComponent(singerName)}` : ''}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch videos');
-      }
-      const data = await response.json();
-      setVideos(data);
-      setError(null);
-    } catch (err) {
-      setError('Error fetching videos');
-      setVideos([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchVideos(singer);
-  }, [singer]);
-
-  const handleSearch = () => {
-    fetchVideos(singer);
-  };
+export default async function NewRelease() {
+  // Fetch videos for each tab server-side
+  const harunoSoraVideos = await fetchVideos('Haruno Sora', ['Haruno Sora', '桜乃そら']);
+  const hiyamaKiyoteruVideos = await fetchVideos('Hiyama Kiyoteru', ['Hiyama Kiyoteru', '氷山キヨテル']);
+  const frimomenVideos = await fetchVideos('Frimomen', ['Frimomen', 'フリモメン']);
 
   return (
-    <Container maxWidth="md" className="mt-8">
-      <Typography variant="h4" component="h1" gutterBottom>
-        New Releases
+    <Box className="mt-8">
+      <Typography variant="h4" className="mb-4 text-blue-600">
+        New Release
       </Typography>
-      <Box className="flex gap-4 mb-4">
-        <TextField
-          label="Singer"
-          variant="outlined"
-          value={singer}
-          onChange={(e) => setSinger(e.target.value)}
-          className="flex-grow"
-        />
-        <Button variant="contained" color="primary" onClick={handleSearch}>
-          Search
-        </Button>
-      </Box>
-      {error && <Typography color="error">{error}</Typography>}
-      <List>
-        {videos.map((video) => (
-          <ListItem key={video.videoId} className="flex flex-col items-start">
-            <YouTube videoId={video.videoId} className="w-full max-w-md" />
-            <ListItemText
-              primary={video.title}
-              secondary={`Singer: ${video.singer} | Uploader: ${video.uploader} | Published: ${new Date(video.publishedAt).toLocaleDateString()}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Container>
+      <VideoTabs
+        harunoSoraVideos={harunoSoraVideos}
+        hiyamaKiyoteruVideos={hiyamaKiyoteruVideos}
+        frimomenVideos={frimomenVideos}
+      />
+    </Box>
   );
 }
