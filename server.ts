@@ -1,11 +1,12 @@
 import Fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import cors from '@fastify/cors';
-import { connectToMongo } from './server/db';
-import loginRoutes from './server/api/login';
-import adminRoutes from './server/api/admin';
-import fetchVideoRoutes from './server/api/fetch_video';
-import getVideosRoutes from './server/api/get_videos';
+import { connectToMongo } from './db';
+import loginRoutes from './api/login';
+import adminRoutes from './api/admin';
+import fetchVideoRoutes from './api/fetch_video';
+import getVideosRoutes from './api/get_videos';
+import triggerFetchVideosRoutes from './api/trigger_fetch_videos';
 
 const fastify = Fastify({ logger: true });
 
@@ -36,6 +37,7 @@ fastify.register(loginRoutes, { prefix: '/api' });
 fastify.register(adminRoutes, { prefix: '/api' });
 fastify.register(fetchVideoRoutes, { prefix: '/api' });
 fastify.register(getVideosRoutes, { prefix: '/api' });
+fastify.register(triggerFetchVideosRoutes, { prefix: '/api' });
 
 // Start server
 const start = async () => {
