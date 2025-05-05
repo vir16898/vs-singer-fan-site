@@ -40,7 +40,7 @@
     "server/**/*.ts",
     "server/**/*.d.ts",
     ".next/types/**/*.ts",
-    "next.config.js"
+    "next.config.cjs"
   ],
   "exclude": [
     "node_modules"
