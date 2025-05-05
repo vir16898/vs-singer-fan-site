@@ -1,11 +1,12 @@
 {
   "name": "vs-singer-fan-site",
   "version": "0.1.0",
-  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"bun server.ts\" \"next dev\"",
     "init-db": "bun scripts/init-db.ts",
-    "cron": "bun scripts/cron_fetch_videos.ts"
+    "cron": "bun scripts/cron_fetch_videos.ts",
+    "build:server": "tsc server.ts --outFile dist/server.mjs --module ESNext --target ES2020"
   },
   "dependencies": {
     "@mui/material": "^5.17.1",
