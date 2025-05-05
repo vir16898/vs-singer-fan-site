@@ -23,24 +23,4 @@
       }
     }
   ],
-  "crons": [
-    {
-      "path": "/api/fetch_video",
-      "schedule": "0 * * * *",
-      "method": "POST",
-      "body": { "singer": "Haruno Sora" }
-    },
-    {
-      "path": "/api/fetch_video",
-      "schedule": "0 * * * *",
-      "method": "POST",
-      "body": { "singer": "Hiyama Kiyoteru" }
-    },
-    {
-      "path": "/api/fetch_video",
-      "schedule": "0 * * * *",
-      "method": "POST",
-      "body": { "singer": "Frimomen" }
-    }
-  ]
 }

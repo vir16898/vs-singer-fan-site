@@ -32,7 +32,7 @@ export {};
 
 
 
-/*
+
 import cron from 'node-cron';
 
 // Schedule cron job to run every hour
@@ -44,4 +44,3 @@ cron.schedule('0 * * * *', async () => {
 });
 
 console.log('Cron job scheduled to run every hour.');
-*/
