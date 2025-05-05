@@ -60,7 +60,7 @@ export default function AdminPortal() {
 
   return (
     <Container maxWidth="sm">
-      <Box className="mt-8 text-центер">
+      <Box className="mt-8 text-center">
         <Typography variant="h4" className="mb-4 text-blue-600">
           Admin Portal
         </Typography>

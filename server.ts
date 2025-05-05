@@ -4,6 +4,8 @@ import cors from '@fastify/cors';
 import { connectToMongo } from './server/db';
 import loginRoutes from './server/api/login';
 import adminRoutes from './server/api/admin';
+import fetchVideoRoutes from './server/api/fetch_video';
+import getVideosRoutes from './server/api/get_videos';
 
 const fastify = Fastify({ logger: true });
 
@@ -32,6 +34,8 @@ fastify.decorate('authenticate', async (request: any, reply: any) => {
 // Register API routes
 fastify.register(loginRoutes, { prefix: '/api' });
 fastify.register(adminRoutes, { prefix: '/api' });
+fastify.register(fetchVideoRoutes, { prefix: '/api' });
+fastify.register(getVideosRoutes, { prefix: '/api' });
 
 // Start server
 const start = async () => {
